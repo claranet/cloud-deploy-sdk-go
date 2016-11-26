@@ -16,9 +16,9 @@ type Client struct {
 }
 
 type errorObject struct {
-	Code   int      `json:"code,omitempty"`
-	Mesage string   `json:"message,omitempty"`
-	Errors []string `json:"errors,omitempty"`
+	Code    int      `json:"code,omitempty"`
+	Message string   `json:"message,omitempty"`
+	Errors  []string `json:"errors,omitempty"`
 }
 
 var netClient = &http.Client{
@@ -106,24 +106,31 @@ func NewClient(endpoint string, username string, password string) *Client {
 	return &Client{Endpoint: endpoint, Username: username, Password: password}
 }
 
-// GetApps returns all apps
-func (c *Client) GetApps() (Apps, error) {
-	var apps Apps
+// Returns all apps
+func (c *Client) GetApps() (apps AppsOut, err error) {
 	res, err := c.get("/apps")
 	if err == nil {
 		err = json.NewDecoder(res.Body).Decode(&apps)
 	}
-	return apps, err
+	return
 }
 
-// GetApps returns the request app
-func (c *Client) GetApp(id string) (App, error) {
-	var app App
+// Return the request app
+func (c *Client) GetApp(id string) (app AppOut, err error) {
 	res, err := c.get("/apps/" + id)
 	if err == nil {
 		err = json.NewDecoder(res.Body).Decode(&app)
 	}
-	return app, err
+	return
+}
+
+// Create a new app
+func (c *Client) CreateApp(app App) (id string, err error) {
+	res, err := c.post("/apps", app)
+	if err == nil {
+		err = json.NewDecoder(res.Body).Decode(&id)
+	}
+	return
 }
 
 func (c *Client) DeleteApp(id string) {
