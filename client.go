@@ -141,11 +141,3 @@ func (c *Client) DeleteApp(id string) {
 
 func (c *Client) UpdateApp(id string, app *App) {
 }
-
-func main() {
-	c := NewClient("https://demo.ghost.***REMOVED***", "demo", "***REMOVED***")
-	err := c.GetApps()
-	if err != nil {
-		fmt.Println(err)
-	}
-}
