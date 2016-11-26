@@ -58,11 +58,11 @@ func (c *Client) checkResponse(resp *http.Response, err error) (*http.Response, 
 	return resp, nil
 }
 
-func (c *Client) delete(path string) (*http.Response, error) {
-	return c.do("DELETE", path, nil, nil)
+func (c *Client) delete(path string, headers map[string]string) (*http.Response, error) {
+	return c.do("DELETE", path, nil, headers)
 }
 
-func (c *Client) put(path string, payload interface{}, headers *map[string]string) (*http.Response, error) {
+func (c *Client) put(path string, payload interface{}, headers map[string]string) (*http.Response, error) {
 
 	if payload != nil {
 		data, err := json.Marshal(payload)
@@ -86,14 +86,14 @@ func (c *Client) get(path string) (*http.Response, error) {
 	return c.do("GET", path, nil, nil)
 }
 
-func (c *Client) do(method, path string, body io.Reader, headers *map[string]string) (*http.Response, error) {
+func (c *Client) do(method, path string, body io.Reader, headers map[string]string) (*http.Response, error) {
 	url := c.Endpoint + path
 	req, _ := http.NewRequest(method, url, body)
-	if headers != nil {
-		for k, v := range *headers {
-			req.Header.Set(k, v)
-		}
+
+	for k, v := range headers {
+		req.Header.Set(k, v)
 	}
+
 	req.Header.Set("Content-Type", "application/json")
 	req.SetBasicAuth(c.Username, c.Password)
 
@@ -125,16 +125,17 @@ func (c *Client) GetApp(id string) (app AppOut, err error) {
 }
 
 // Create a new app
-func (c *Client) CreateApp(app App) (id string, err error) {
+func (c *Client) CreateApp(app App) (metadata EveItemMetadata, err error) {
 	res, err := c.post("/apps", app)
 	if err == nil {
-		err = json.NewDecoder(res.Body).Decode(&id)
+		err = json.NewDecoder(res.Body).Decode(&metadata)
 	}
 	return
 }
 
-func (c *Client) DeleteApp(id string) {
-
+func (c *Client) DeleteApp(id string, etag string) (err error) {
+	_, err = c.delete("/apps/"+id, map[string]string{"If-Match": etag})
+	return
 }
 
 func (c *Client) UpdateApp(id string, app *App) {

@@ -16,6 +16,7 @@ func pseudo_uuid() (uuid string) {
 }
 
 var c = NewClient("https://demo.ghost.***REMOVED***", "demo", "***REMOVED***")
+var appMetadata EveItemMetadata
 
 func TestClientGetApps(t *testing.T) {
 	fmt.Println("Testing Ghost client get all apps")
@@ -85,9 +86,22 @@ func TestClientCreateApp(t *testing.T) {
 		},
 	}
 
-	id, err := c.CreateApp(app)
+	var err error
+	appMetadata, err = c.CreateApp(app)
 	if err == nil {
-		fmt.Println("App created:" + id)
+		fmt.Println("App created: " + appMetadata.ID)
+		fmt.Println()
+	} else {
+		t.Fatalf("error: %v", err)
+	}
+}
+
+func TestClientDeleteApp(t *testing.T) {
+	fmt.Println("Testing Ghost client delete app")
+
+	err := c.DeleteApp(appMetadata.ID, appMetadata.Etag)
+	if err == nil {
+		fmt.Println("App deleted: " + appMetadata.ID)
 		fmt.Println()
 	} else {
 		t.Fatalf("error: %v", err)

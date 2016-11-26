@@ -7,6 +7,8 @@ type Link struct {
 }
 
 type EveItemMetadata struct {
+	ID string `json:"_id,omitempty"`
+
 	Etag string `json:"_etag,omitempty"`
 
 	Created string `json:"_created,omitempty"`
