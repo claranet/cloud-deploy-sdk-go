@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"time"
 )
@@ -58,37 +57,18 @@ func (c *Client) checkResponse(resp *http.Response, err error) (*http.Response, 
 	return resp, nil
 }
 
-func (c *Client) delete(path string, headers map[string]string) (*http.Response, error) {
-	return c.do("DELETE", path, nil, headers)
-}
+func (c *Client) do(method, path string, payload interface{}, headers map[string]string) (*http.Response, error) {
+	url := c.Endpoint + path
 
-func (c *Client) put(path string, payload interface{}, headers map[string]string) (*http.Response, error) {
-
+	var body bytes.Buffer
 	if payload != nil {
 		data, err := json.Marshal(payload)
-		if err != nil {
-			return nil, err
+		if err == nil {
+			body = *bytes.NewBuffer(data)
 		}
-		return c.do("PUT", path, bytes.NewBuffer(data), headers)
 	}
-	return c.do("PUT", path, nil, headers)
-}
 
-func (c *Client) post(path string, payload interface{}) (*http.Response, error) {
-	data, err := json.Marshal(payload)
-	if err != nil {
-		return nil, err
-	}
-	return c.do("POST", path, bytes.NewBuffer(data), nil)
-}
-
-func (c *Client) get(path string) (*http.Response, error) {
-	return c.do("GET", path, nil, nil)
-}
-
-func (c *Client) do(method, path string, body io.Reader, headers map[string]string) (*http.Response, error) {
-	url := c.Endpoint + path
-	req, _ := http.NewRequest(method, url, body)
+	req, _ := http.NewRequest(method, url, &body)
 
 	for k, v := range headers {
 		req.Header.Set(k, v)
@@ -99,6 +79,22 @@ func (c *Client) do(method, path string, body io.Reader, headers map[string]stri
 
 	resp, err := netClient.Do(req)
 	return c.checkResponse(resp, err)
+}
+
+func (c *Client) delete(path string, headers map[string]string) (*http.Response, error) {
+	return c.do("DELETE", path, nil, headers)
+}
+
+func (c *Client) put(path string, payload interface{}, headers map[string]string) (res *http.Response, err error) {
+	return c.do("PUT", path, payload, headers)
+}
+
+func (c *Client) post(path string, payload interface{}) (res *http.Response, err error) {
+	return c.do("POST", path, payload, nil)
+}
+
+func (c *Client) get(path string) (*http.Response, error) {
+	return c.do("GET", path, nil, nil)
 }
 
 // NewClient Return a Ghost client
