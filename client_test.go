@@ -6,6 +6,10 @@ import (
 	"testing"
 )
 
+// Global vars reused between tests
+var c = NewClient("https://demo.ghost.***REMOVED***", "demo", "***REMOVED***")
+var eveMetadata EveItemMetadata
+
 func pseudo_uuid() (uuid string) {
 	b := make([]byte, 16)
 	_, err := rand.Read(b)
@@ -14,9 +18,6 @@ func pseudo_uuid() (uuid string) {
 	}
 	return
 }
-
-var c = NewClient("https://demo.ghost.***REMOVED***", "demo", "***REMOVED***")
-var appMetadata EveItemMetadata
 
 func TestClientGetApps(t *testing.T) {
 	fmt.Println("Testing Ghost client get all apps")
@@ -30,21 +31,9 @@ func TestClientGetApps(t *testing.T) {
 	}
 }
 
-func TestClientGetApp(t *testing.T) {
-	fmt.Println("Testing Ghost client get single app")
-	app, err := c.GetApp("55cf9ce5fde8dd0521358a19")
-	if err == nil {
-		fmt.Println("App retrieved:")
-		fmt.Println(app)
-		fmt.Println()
-	} else {
-		t.Fatalf("error: %v", err)
-	}
-}
-
 func TestClientCreateApp(t *testing.T) {
 	fmt.Println("Testing Ghost client create app")
-	app := App{
+	newapp := App{
 		Name: "test-" + pseudo_uuid(),
 		Env:  "test",
 		Role: "webfront",
@@ -87,21 +76,69 @@ func TestClientCreateApp(t *testing.T) {
 	}
 
 	var err error
-	appMetadata, err = c.CreateApp(app)
+	eveMetadata, err = c.CreateApp(newapp)
 	if err == nil {
-		fmt.Println("App created: " + appMetadata.ID)
+		fmt.Println("App created: " + eveMetadata.ID)
 		fmt.Println()
 	} else {
 		t.Fatalf("error: %v", err)
 	}
 }
 
+func TestClientGetApp(t *testing.T) {
+	fmt.Println("Testing Ghost client get single app")
+	app, err := c.GetApp(eveMetadata.ID)
+	if err == nil {
+		fmt.Println("App retrieved: " + app.ID)
+		fmt.Println(app)
+		fmt.Println()
+	} else {
+		t.Fatalf("error: %v", err)
+	}
+}
+
+func TestClientUpdateApp(t *testing.T) {
+	fmt.Println("Testing Ghost client update app")
+
+	app, err := c.GetApp(eveMetadata.ID)
+
+	// Remove read only fields
+	app.Etag = nil
+	app.Links = nil
+	app.Created = nil
+	app.Updated = nil
+	app.Version = nil
+	app.LatestVersion = nil
+	app.Modules[0].Initialized = nil
+
+	// Add module
+	app.Modules = append(app.Modules, Module{
+		Name:    "testmod2",
+		GitRepo: "git@bitbucket.org/morea/testmod2",
+		Scope:   "system",
+		Path:    "/tmp/path2",
+	})
+
+	eveMetadata, err = c.UpdateApp(&app, eveMetadata.ID, *eveMetadata.Etag)
+	if err == nil {
+		fmt.Println("App updated: " + eveMetadata.ID)
+		fmt.Println()
+	} else {
+		t.Fatalf("error: %v", err)
+	}
+
+	app, err = c.GetApp(eveMetadata.ID)
+	if len(app.Modules) != 2 {
+		t.Fatalf("Assertion error: added module is missing")
+	}
+}
+
 func TestClientDeleteApp(t *testing.T) {
 	fmt.Println("Testing Ghost client delete app")
 
-	err := c.DeleteApp(appMetadata.ID, appMetadata.Etag)
+	err := c.DeleteApp(eveMetadata.ID, *eveMetadata.Etag)
 	if err == nil {
-		fmt.Println("App deleted: " + appMetadata.ID)
+		fmt.Println("App deleted: " + eveMetadata.ID)
 		fmt.Println()
 	} else {
 		t.Fatalf("error: %v", err)

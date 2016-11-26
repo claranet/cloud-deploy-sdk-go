@@ -103,19 +103,10 @@ func NewClient(endpoint string, username string, password string) *Client {
 }
 
 // Returns all apps
-func (c *Client) GetApps() (apps AppsOut, err error) {
+func (c *Client) GetApps() (apps Apps, err error) {
 	res, err := c.get("/apps")
 	if err == nil {
 		err = json.NewDecoder(res.Body).Decode(&apps)
-	}
-	return
-}
-
-// Return the request app
-func (c *Client) GetApp(id string) (app AppOut, err error) {
-	res, err := c.get("/apps/" + id)
-	if err == nil {
-		err = json.NewDecoder(res.Body).Decode(&app)
 	}
 	return
 }
@@ -129,10 +120,26 @@ func (c *Client) CreateApp(app App) (metadata EveItemMetadata, err error) {
 	return
 }
 
-func (c *Client) DeleteApp(id string, etag string) (err error) {
-	_, err = c.delete("/apps/"+id, map[string]string{"If-Match": etag})
+// Return the requested app
+func (c *Client) GetApp(id string) (app App, err error) {
+	res, err := c.get("/apps/" + id)
+	if err == nil {
+		err = json.NewDecoder(res.Body).Decode(&app)
+	}
 	return
 }
 
-func (c *Client) UpdateApp(id string, app *App) {
+// Update an existing app
+func (c *Client) UpdateApp(app *App, id string, etag string) (metadata EveItemMetadata, err error) {
+	res, err := c.put("/apps/"+id, app, map[string]string{"If-Match": etag})
+	if err == nil {
+		err = json.NewDecoder(res.Body).Decode(&metadata)
+	}
+	return
+}
+
+// Delete an existing app
+func (c *Client) DeleteApp(id string, etag string) (err error) {
+	_, err = c.delete("/apps/"+id, map[string]string{"If-Match": etag})
+	return
 }

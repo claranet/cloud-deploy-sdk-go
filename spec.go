@@ -2,37 +2,38 @@ package ghost
 
 // eve metadata
 type Link struct {
-	Href  string `json:"href"`
-	Title string `json:"title"`
+	Href  string `json:"href,omitempty"`
+	Rel   string `json:"rel,omitempty"`
+	Title string `json:"title,omitempty"`
 }
 
 type EveItemMetadata struct {
 	ID string `json:"_id,omitempty"`
 
-	Etag string `json:"_etag,omitempty"`
+	Etag *string `json:"_etag,omitempty"`
 
-	Created string `json:"_created,omitempty"`
-	Updated string `json:"_updated,omitempty"`
+	Created *string `json:"_created,omitempty"`
+	Updated *string `json:"_updated,omitempty"`
 
-	Version       int64 `json:"_version,omitempty"`
-	LatestVersion int64 `json:"_latest_version,omitempty"`
+	Version       *int64 `json:"_version,omitempty"`
+	LatestVersion *int64 `json:"_latest_version,omitempty"`
 
-	Links struct {
-		Self Link `json:"self"`
+	Links *struct {
+		Self Link `json:"self,omitempty"`
 	} `json:"_links,omitempty"`
 }
 
 type EveCollectionMetadata struct {
-	Links struct {
-		Parent Link `json:"parent"`
-		Self   Link `json:"self"`
-	} `json:"_links"`
+	Links *struct {
+		Parent Link `json:"parent,omitempty"`
+		Self   Link `json:"self,omitempty"`
+	} `json:"_links,omitempty"`
 
-	Meta struct {
-		MaxResults int64 `json:"max_results"`
-		Page       int64 `json:"page"`
-		Total      int64 `json:"total"`
-	} `json:"_meta"`
+	Meta *struct {
+		MaxResults int64 `json:"max_results,omitempty"`
+		Page       int64 `json:"page,omitempty"`
+		Total      int64 `json:"total,omitempty"`
+	} `json:"_meta,omitempty"`
 }
 
 // Ghost App's build_infos struct
@@ -91,8 +92,7 @@ type Module struct {
 
 // Ghost App struct
 type App struct {
-	ID string `json:"_id,omitempty"`
-
+	EveItemMetadata
 	User string `json:"user"`
 
 	Name string `json:"name"`
@@ -114,17 +114,8 @@ type App struct {
 	Modules []Module `json:"modules"`
 }
 
-type AppOut struct {
-	EveItemMetadata
-	App
-}
-
 // Ghost Apps collection
 type Apps struct {
-	Items []App `json:"_items"`
-}
-
-type AppsOut struct {
 	EveCollectionMetadata
-	Apps
+	Items []App `json:"_items"`
 }
