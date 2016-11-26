@@ -14,15 +14,28 @@ type App struct {
 	Updated       string `json:"_updated"`
 	Version       int64  `json:"_version"`
 	LatestVersion int64  `json:"_latest_version"`
-	Autoscale     struct {
+	User          string `json:"user"`
+
+	Name string `json:"name"`
+	Env  string `json:"env"`
+	Role string `json:"role"`
+
+	Region       string `json:"region"`
+	InstanceType string `json:"instance_type"`
+	VpcID        string `json:"vpc_id"`
+
+	LogNotifications []string `json:"log_notifications"`
+
+	Autoscale struct {
 		Name string `json:"name"`
 	} `json:"autoscale"`
+
 	BuildInfos struct {
 		SourceAmi   string `json:"source_ami"`
 		SshUsername string `json:"ssh_username"`
 		SubnetID    string `json:"subnet_id"`
 	} `json:"build_infos"`
-	Env              string `json:"env"`
+
 	EnvironmentInfos struct {
 		InstanceProfile string        `json:"instance_profile"`
 		KeyName         string        `json:"key_name"`
@@ -32,13 +45,13 @@ type App struct {
 		SecurityGroups []string `json:"security_groups"`
 		SubnetIDs      []string `json:"subnet_ids"`
 	} `json:"environment_infos"`
+
 	Features []struct {
 		Name    string  `json:"name"`
 		Version float64 `json:"version,string"`
 	} `json:"features"`
-	InstanceType     string   `json:"instance_type"`
-	LogNotifications []string `json:"log_notifications"`
-	Modules          []struct {
+
+	Modules []struct {
 		GitRepo     string `json:"git_repo"`
 		Initialized bool   `json:"initialized"`
 		Name        string `json:"name"`
@@ -46,22 +59,20 @@ type App struct {
 		PreDeploy   string `json:"pre_deploy"`
 		Scope       string `json:"scope"`
 	} `json:"modules"`
-	Name   string `json:"name"`
-	Region string `json:"region"`
-	Role   string `json:"role"`
-	User   string `json:"user"`
-	VpcID  string `json:"vpc_id"`
-	Links  struct {
+
+	Links struct {
 		Self Link `json:"self"`
 	} `json:"_links"`
 }
 
 type Apps struct {
 	Items []App `json:"_items"`
+
 	Links struct {
 		Parent Link `json:"parent"`
 		Self   Link `json:"self"`
 	} `json:"_links"`
+
 	Meta struct {
 		MaxResults int64 `json:"max_results"`
 		Page       int64 `json:"page"`
