@@ -1,4 +1,4 @@
-package main
+package ghost
 
 type Apps struct {
 	Items []struct {

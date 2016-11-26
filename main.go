@@ -1,4 +1,4 @@
-package main
+package ghost
 
 import (
 	"bytes"
@@ -8,10 +8,6 @@ import (
 	"net/http"
 	"time"
 )
-
-const apiURL = "http://localhost:5000"
-const username = "adrien"
-const password = "Labiloute42"
 
 type Client struct {
 	Username string
