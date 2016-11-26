@@ -12,7 +12,7 @@ import (
 type Client struct {
 	Username string
 	Password string
-	APIURL   string
+	Endpoint string
 }
 
 type errorObject struct {
@@ -87,8 +87,8 @@ func (c *Client) get(path string) (*http.Response, error) {
 }
 
 func (c *Client) do(method, path string, body io.Reader, headers *map[string]string) (*http.Response, error) {
-	endpoint := c.APIURL + path
-	req, _ := http.NewRequest(method, endpoint, body)
+	url := c.Endpoint + path
+	req, _ := http.NewRequest(method, url, body)
 	if headers != nil {
 		for k, v := range *headers {
 			req.Header.Set(k, v)
@@ -102,37 +102,28 @@ func (c *Client) do(method, path string, body io.Reader, headers *map[string]str
 }
 
 // NewClient Return a Ghost client
-func NewClient(apiURL string, username string, password string) *Client {
-	return &Client{APIURL: apiURL, Username: username, Password: password}
+func NewClient(endpoint string, username string, password string) *Client {
+	return &Client{Endpoint: endpoint, Username: username, Password: password}
 }
 
-// GetApps return all apps
-func (c *Client) GetApps() error {
-	res, err := c.get("/apps")
-	if err != nil {
-		return err
-	}
+// GetApps returns all apps
+func (c *Client) GetApps() (Apps, error) {
 	var apps Apps
-	json.NewDecoder(res.Body).Decode(&apps)
-	if err != nil {
-		return err
+	res, err := c.get("/apps")
+	if err == nil {
+		err = json.NewDecoder(res.Body).Decode(&apps)
 	}
-	fmt.Println(apps)
-	return nil
+	return apps, err
 }
 
-func (c *Client) GetApp(id string) error {
-	res, err := c.get("/apps/" + id)
-	if err != nil {
-		return err
-	}
+// GetApps returns the request app
+func (c *Client) GetApp(id string) (App, error) {
 	var app App
-	err = json.NewDecoder(res.Body).Decode(&app)
-	if err != nil {
-		return err
+	res, err := c.get("/apps/" + id)
+	if err == nil {
+		err = json.NewDecoder(res.Body).Decode(&app)
 	}
-	fmt.Println(app)
-	return nil
+	return app, err
 }
 
 func (c *Client) DeleteApp(id string) {
