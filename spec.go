@@ -47,8 +47,8 @@ type App struct {
 	} `json:"environment_infos"`
 
 	Features []struct {
-		Name    string  `json:"name"`
-		Version float64 `json:"version,string"`
+		Name    string `json:"name"`
+		Version string `json:"version"`
 	} `json:"features"`
 
 	Modules []struct {
