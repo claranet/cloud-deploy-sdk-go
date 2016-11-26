@@ -6,7 +6,23 @@ type Link struct {
 	Title string `json:"title"`
 }
 
-// App struct describe application in Ghost
+// Ghost App's feature struct
+type Feature struct {
+	Name    string `json:"name"`
+	Version string `json:"version"`
+}
+
+// Ghost App's module struct
+type Module struct {
+	GitRepo     string `json:"git_repo"`
+	Initialized bool   `json:"initialized"`
+	Name        string `json:"name"`
+	Path        string `json:"path"`
+	PreDeploy   string `json:"pre_deploy"`
+	Scope       string `json:"scope"`
+}
+
+// Ghost App struct
 type App struct {
 	Etag          string `json:"_etag"`
 	ID            string `json:"_id"`
@@ -26,10 +42,6 @@ type App struct {
 
 	LogNotifications []string `json:"log_notifications"`
 
-	Autoscale struct {
-		Name string `json:"name"`
-	} `json:"autoscale"`
-
 	BuildInfos struct {
 		SourceAmi   string `json:"source_ami"`
 		SshUsername string `json:"ssh_username"`
@@ -46,19 +58,9 @@ type App struct {
 		SubnetIDs      []string `json:"subnet_ids"`
 	} `json:"environment_infos"`
 
-	Features []struct {
-		Name    string `json:"name"`
-		Version string `json:"version"`
-	} `json:"features"`
+	Features []Feature `json:"features"`
 
-	Modules []struct {
-		GitRepo     string `json:"git_repo"`
-		Initialized bool   `json:"initialized"`
-		Name        string `json:"name"`
-		Path        string `json:"path"`
-		PreDeploy   string `json:"pre_deploy"`
-		Scope       string `json:"scope"`
-	} `json:"modules"`
+	Modules []Module `json:"modules"`
 
 	Links struct {
 		Self Link `json:"self"`
