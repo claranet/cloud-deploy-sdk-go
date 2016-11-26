@@ -1,5 +1,11 @@
 package ghost
 
+// Link struct
+type Link struct {
+	Href  string `json:"href"`
+	Title string `json:"title"`
+}
+
 // App struct describe application in Ghost
 type App struct {
 	Etag          string `json:"_etag"`
@@ -46,24 +52,15 @@ type App struct {
 	User   string `json:"user"`
 	VpcID  string `json:"vpc_id"`
 	Links  struct {
-		Self struct {
-			Href  string `json:"href"`
-			Title string `json:"title"`
-		} `json:"self"`
+		Self Link `json:"self"`
 	} `json:"_links"`
 }
 
 type Apps struct {
 	Items []App `json:"_items"`
 	Links struct {
-		Parent struct {
-			Href  string `json:"href"`
-			Title string `json:"title"`
-		} `json:"parent"`
-		Self struct {
-			Href  string `json:"href"`
-			Title string `json:"title"`
-		} `json:"self"`
+		Parent Link `json:"parent"`
+		Self   Link `json:"self"`
 	} `json:"_links"`
 	Meta struct {
 		MaxResults int64 `json:"max_results"`
