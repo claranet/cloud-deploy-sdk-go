@@ -44,28 +44,31 @@ func TestClientCreateApp(t *testing.T) {
 
 		LogNotifications: []string{"ghost-demo@domain.com"},
 
-		BuildInfos: BuildInfos{
+		BuildInfos: &BuildInfos{
 			SourceAmi:   "ami-123456",
 			SshUsername: "admin",
 			SubnetID:    "subnet-123456",
 		},
 
-		EnvironmentInfos: EnvironmentInfos{
+		EnvironmentInfos: &EnvironmentInfos{
 			InstanceProfile: "test-instance-profile",
 			KeyName:         "test-key-name",
-			OptionalVolumes: []OptionalVolume{},
-			RootBlockDevice: RootBlockDevice{Name: "/dev/xvda"},
-			SecurityGroups:  []string{"sg-123456"},
-			SubnetIDs:       []string{"subnet-123456"},
+			// OptionalVolumes: &[]OptionalVolume{},
+			RootBlockDevice: &RootBlockDevice{
+				Name: "/dev/xvda",
+				Size: 20,
+			},
+			SecurityGroups: []string{"sg-123456"},
+			SubnetIDs:      []string{"subnet-123456"},
 		},
 
-		Features: []Feature{
+		Features: &[]Feature{
 			{
 				Name:    "nginx",
 				Version: "1.10",
 			},
 		},
-		Modules: []Module{
+		Modules: &[]Module{
 			{
 				Name:    "testmod",
 				GitRepo: "git@bitbucket.org/morea/testmod",
@@ -109,10 +112,10 @@ func TestClientUpdateApp(t *testing.T) {
 	app.Updated = nil
 	app.Version = nil
 	app.LatestVersion = nil
-	app.Modules[0].Initialized = nil
+	(*app.Modules)[0].Initialized = nil
 
 	// Add module
-	app.Modules = append(app.Modules, Module{
+	*app.Modules = append(*app.Modules, Module{
 		Name:    "testmod2",
 		GitRepo: "git@bitbucket.org/morea/testmod2",
 		Scope:   "system",
@@ -128,7 +131,7 @@ func TestClientUpdateApp(t *testing.T) {
 	}
 
 	app, err = c.GetApp(eveMetadata.ID)
-	if len(app.Modules) != 2 {
+	if len(*app.Modules) != 2 {
 		t.Fatalf("Assertion error: added module is missing")
 	}
 }
