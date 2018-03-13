@@ -53,7 +53,7 @@ func TestClientCreateApp(t *testing.T) {
 		EnvironmentInfos: &EnvironmentInfos{
 			InstanceProfile: "test-instance-profile",
 			KeyName:         "test-key-name",
-			// OptionalVolumes: &[]OptionalVolume{},
+			OptionalVolumes: &[]OptionalVolume{},
 			RootBlockDevice: &RootBlockDevice{
 				Name: "/dev/xvda",
 				Size: 20,
