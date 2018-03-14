@@ -72,7 +72,7 @@ type EnvironmentInfos struct {
 	SubnetIDs       []string          `json:"subnet_ids,omitempty"`
 	OptionalVolumes *[]OptionalVolume `json:"optional_volumes,omitempty"`
 	RootBlockDevice *RootBlockDevice  `json:"root_block_device,omitempty"`
-	PublicIpAddress bool              `json:"public_ip_address,omitempty"`
+	PublicIpAddress bool              `json:"public_ip_address"`
 	InstanceTags    *[]InstanceTag    `json:"instance_tags,omitempty"`
 }
 
@@ -92,8 +92,8 @@ type Module struct {
 	Scope   string `json:"scope"`
 	Path    string `json:"path"`
 
-	UID int `json:"uid,omitempty"`
-	GID int `json:"gid,omitempty"`
+	UID int `json:"uid"`
+	GID int `json:"gid"`
 
 	// Scripts
 	BuildPack      string `json:"build_pack,omitempty"`
@@ -116,15 +116,15 @@ type EnvironmentVariable struct {
 }
 
 type Autoscale struct {
-	Min           int    `json:"min,omitempty"`
-	Max           int    `json:"max,omitempty"`
-	EnableMetrics bool   `json:"enable_metrics,omitempty"`
+	Min           int    `json:"min"`
+	Max           int    `json:"max"`
+	EnableMetrics bool   `json:"enable_metrics"`
 	Name          string `json:"name,omitempty"`
 }
 
 type SafeDeployment struct {
-	WaitBeforeDeploy int    `json:"wait_before_deploy,omitempty"`
-	WaitAfterDeploy  int    `json:"wait_after_deploy,omitempty"`
+	WaitBeforeDeploy int    `json:"wait_before_deploy"`
+	WaitAfterDeploy  int    `json:"wait_after_deploy"`
 	LoadBalancerType string `json:"load_balancer_type,omitempty"`
 	AppTagValue      string `json:"app_tag_value,omitempty"`
 	HaBackend        string `json:"ha_backend,omitempty"`
@@ -148,7 +148,7 @@ type App struct {
 
 	Region             string `json:"region"`
 	InstanceType       string `json:"instance_type"`
-	InstanceMonitoring bool   `json:"instance_monitoring,omitempty"`
+	InstanceMonitoring bool   `json:"instance_monitoring"`
 	VpcID              string `json:"vpc_id"`
 
 	LifecycleHooks *LifecycleHooks `json:"lifecycle_hooks,omitempty"`
