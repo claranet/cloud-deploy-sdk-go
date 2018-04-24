@@ -1,4 +1,4 @@
-# Cloud Deploy (Ghost) SDK for Go #
+# Cloud Deploy (Ghost) SDK for Go [![API Reference](http://img.shields.io/badge/api-reference-blue.svg)](https://docs.cloud-deploy.io/rst/api.html) [![Apache V2 License](http://img.shields.io/badge/license-Apache%20V2-blue.svg)](https://github.com/claranet/cloud-deploy-sdk-go/blob/master/LICENSE) #
 
 cloud-deploy-sdk-go is the Cloud Deploy SDK for the Go programming language.
 
@@ -26,5 +26,5 @@ Testing Ghost client delete app
 App deleted: 5839c643fde8dd2de0cf6bf9
 
 PASS
-ok      bitbucket.org/morea/go-st       2.598s
+ok      github.com/claranet/cloud-deploy-sdk-go       2.598s
 ```
