@@ -1,6 +1,10 @@
-# Ghost client #
+# Cloud Deploy (Ghost) SDK for Go #
 
-Running tests:
+cloud-deploy-sdk-go is the Cloud Deploy SDK for the Go programming language.
+
+
+Running tests
+-------------
 
 ```
 $ go test
