@@ -44,9 +44,6 @@ func TestClientGetApps(t *testing.T) {
 }
 
 func TestClientGetApp(t *testing.T) {
-	mux, server, client := setupTest()
-	defer teardownTest(server)
-
 	appID := "5af94fb79cfca46315de31a3"
 
 	tests := []struct {
@@ -89,6 +86,9 @@ func TestClientGetApp(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		mux, server, client := setupTest()
+		defer teardownTest(server)
+
 		mux.HandleFunc(test.url, func(w http.ResponseWriter, r *http.Request) {
 			testMethod(t, r, "GET")
 			fmt.Fprint(w, test.clientResp)
@@ -101,15 +101,10 @@ func TestClientGetApp(t *testing.T) {
 		if !test.expectedError && !reflect.DeepEqual(test.expectedResp, app) {
 			t.Errorf("apps.GetApp returned %+v, want %+v", app, test.expectedResp)
 		}
-
-		mux, server, client = setupTest()
 	}
 }
 
 func TestClientCreateApp(t *testing.T) {
-	mux, server, client := setupTest()
-	defer teardownTest(server)
-
 	tests := []struct {
 		url           string
 		clientResp    string
@@ -165,6 +160,9 @@ func TestClientCreateApp(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		mux, server, client := setupTest()
+		defer teardownTest(server)
+
 		mux.HandleFunc(test.url, func(w http.ResponseWriter, r *http.Request) {
 			testMethod(t, r, "POST")
 			fmt.Fprint(w, test.clientResp)
@@ -177,8 +175,6 @@ func TestClientCreateApp(t *testing.T) {
 		if !test.expectedError && !reflect.DeepEqual(test.expectedResp, app) {
 			t.Errorf("apps.CreateApp returned %+v, want %+v", app, test.expectedResp)
 		}
-
-		mux, server, client = setupTest()
 	}
 }
 
@@ -187,9 +183,6 @@ func getStringAddr(s string) *string {
 }
 
 func TestClientUpdateApp(t *testing.T) {
-	mux, server, client := setupTest()
-	defer teardownTest(server)
-
 	appID := "5af94fb79cfca46315de31a3"
 	appETAG := "1"
 
@@ -243,6 +236,9 @@ func TestClientUpdateApp(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		mux, server, client := setupTest()
+		defer teardownTest(server)
+
 		mux.HandleFunc(test.url, func(w http.ResponseWriter, r *http.Request) {
 			testMethod(t, r, "PATCH")
 			fmt.Fprint(w, test.clientResp)
@@ -255,15 +251,10 @@ func TestClientUpdateApp(t *testing.T) {
 		if !test.expectedError && !reflect.DeepEqual(test.expectedResp, app) {
 			t.Errorf("apps.UpdateApp returned %+v, want %+v", app, test.expectedResp)
 		}
-
-		mux, server, client = setupTest()
 	}
 }
 
 func TestClientDeleteApp(t *testing.T) {
-	mux, server, client := setupTest()
-	defer teardownTest(server)
-
 	appID := "5af94fb79cfca46315de31a3"
 	appETAG := "1"
 
@@ -284,6 +275,9 @@ func TestClientDeleteApp(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		mux, server, client := setupTest()
+		defer teardownTest(server)
+
 		mux.HandleFunc(test.url, func(w http.ResponseWriter, r *http.Request) {
 			testMethod(t, r, "DELETE")
 			fmt.Fprint(w, "")
@@ -293,7 +287,5 @@ func TestClientDeleteApp(t *testing.T) {
 		if err != nil && !test.expectedError {
 			t.Errorf("apps.DeleteApp returned error: %v", err)
 		}
-
-		mux, server, client = setupTest()
 	}
 }
